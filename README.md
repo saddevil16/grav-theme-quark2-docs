@@ -4,7 +4,7 @@ A child theme of [Quark 2](https://github.com/getgrav/grav-theme-quark2) for [Gr
  
 Everything else on your site keeps the Quark 2 look. Only pages that use the `docs` template get the documentation layout, so you can run a normal site with Default and Modular pages and a docs section side by side.
 
-(Add picture screenshot)
+![screenshot](screenshot.jpg)
 
 ## Features
  

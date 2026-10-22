@@ -23,6 +23,28 @@ Everything else on your site keeps the Quark 2 look. Only pages that use the `do
 - Grav 2.0 or later
 - The [Quark 2](https://github.com/getgrav/grav-theme-quark2) theme installed. This theme inherits its templates, styles and scripts from it.
 
+## Installation
+
+### With GPM
+
+```bash
+bin/gpm install quark2-docs
+```
+
+(Available once the theme is listed in GPM.)
+
+### Manually
+
+1. Install the parent theme: `bin/gpm install quark2`
+2. Download the latest release, or clone this repository, into `user/themes/`. The folder name **must** be `quark2-docs`:
+
+```bash
+   cd user/themes
+   git clone https://github.com/saddevil16/grav-theme-quark2-docs.git quark2-docs
+```
+
+3. Activate **Quark 2 Docs** under **Themes** in the admin, then run `bin/grav clearcache`.
+
 ## Creating a documentation section
  
 1. Create a folder for the docs, for example `user/pages/05.docs/`, and add a page to it named **`docs.md`**. Pages named `docs.md` use the documentation template automatically:

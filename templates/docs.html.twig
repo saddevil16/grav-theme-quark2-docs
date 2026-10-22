@@ -1,0 +1,253 @@
+{% extends 'partials/base.html.twig' %}
+
+{% macro render_tree(pages) %}
+    {% import _self as nav %}
+
+    <ul class="docs-nav-list">
+        {% for item in pages %}
+            {% set children = item.children %}
+
+            <li class="docs-nav-item
+		{{ item.active ? 'active' : '' }}
+		{{ item.activeChild ? 'activeChild expanded' : '' }}
+		{{ item.active and children.count > 0 ? 'expanded' : '' }}
+		{{ children.count > 0 ? 'has-children' : '' }}"
+		data-path="{{ item.route|e('html_attr') }}"
+	    >
+
+                <div class="docs-nav-row">
+                    <a href="{{ item.url }}">
+                        {{ item.menu ?: item.title }}
+                    </a>
+
+                    {% if children.count > 0 %}
+                        <button
+                            class="docs-toggle"
+                            type="button"
+			    aria-expanded="{{ item.active or item.activeChild ? 'true' : 'false' }}"
+                            aria-label="Toggle {{ item.menu ?: item.title }}"
+                            title="Expand or collapse"
+                        >
+                            <span class="docs-chevron" aria-hidden="true"></span>
+                        </button>
+                    {% endif %}
+                </div>
+
+                {% if children.count > 0 %}
+                    <div class="docs-subnav">
+                        {{ nav.render_tree(children) }}
+                    </div>
+                {% endif %}
+
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% import _self as docs_nav %}
+
+{% block content %}
+    {% set root = page.find('/docs') %}
+
+    {% if root %}
+
+        {# Main topics are direct children of /docs #}
+        {% set is_main_topic = page.parent and page.parent.route == root.route %}
+
+        {# Show the right-hand TOC only for child/subchild pages #}
+        {% set show_toc = page.route != root.route and not is_main_topic %}
+
+        <div class="docs-layout {{ show_toc ? 'has-toc' : 'no-toc' }}">
+
+            {# LEFT: Documentation navigation #}
+            <aside class="docs-sidebar">
+                <nav aria-label="Documentation">
+                    {{ docs_nav.render_tree(root.children) }}
+                </nav>
+            </aside>
+
+            {# MIDDLE: Main article #}
+            <article class="content-item docs-content">
+                {{ page.content|raw }}
+            </article>
+
+            {# RIGHT: Automatically generated table of contents #}
+            {% if show_toc %}
+                <aside class="docs-toc" aria-label="On this page">
+                    <h4>ON THIS PAGE</h4>
+                    <nav>
+                        <ul id="docs-toc-list"></ul>
+                    </nav>
+                </aside>
+            {% endif %}
+
+        </div>
+
+        {% if show_toc %}
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const article = document.querySelector('.docs-content');
+                const tocList = document.getElementById('docs-toc-list');
+
+                if (!article || !tocList) return;
+
+                // Use article headings to build the table of contents.
+                const headings = article.querySelectorAll('h2, h3, h4');
+
+                headings.forEach(function (heading, index) {
+                    // Ignore headings that are empty.
+                    const title = heading.textContent.trim();
+                    if (!title) return;
+
+                    // Preserve existing heading IDs where possible.
+                    if (!heading.id) {
+                        const slug = title
+                            .toLowerCase()
+                            .normalize('NFKD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^\w\s-]/g, '')
+                            .trim()
+                            .replace(/\s+/g, '-');
+
+                        heading.id = slug || 'section-' + (index + 1);
+                    }
+
+                    const item = document.createElement('li');
+                    item.className = 'docs-toc-level-' +
+                        heading.tagName.substring(1);
+
+                    const link = document.createElement('a');
+                    link.href = '#' + encodeURIComponent(heading.id);
+                    link.textContent = title;
+
+                    item.appendChild(link);
+                    tocList.appendChild(item);
+                });
+
+                // Hide the TOC if the article has no usable headings.
+                const toc = document.querySelector('.docs-toc');
+
+                if (!tocList.children.length && toc) {
+                    toc.hidden = true;
+                    document.querySelector('.docs-layout')
+                        .classList.remove('has-toc');
+                    document.querySelector('.docs-layout')
+                        .classList.add('no-toc');
+                }
+            });
+            </script>
+        {% endif %}
+	        {# Keep dropdowns open across documentation page navigation #}
+        <script>
+        (function () {
+            const storageKey = 'docs-sidebar-expanded';
+
+            function getExpandedPaths() {
+                try {
+                    return JSON.parse(
+                        sessionStorage.getItem(storageKey) || '[]'
+                    );
+                } catch (error) {
+                    return [];
+                }
+            }
+
+            function saveExpandedPaths() {
+                const paths = Array.from(
+                    document.querySelectorAll(
+                        '.docs-sidebar .docs-nav-item.expanded'
+                    )
+                )
+                .map(function (item) {
+                    return item.dataset.path;
+                })
+                .filter(Boolean);
+
+                try {
+                    sessionStorage.setItem(
+                        storageKey,
+                        JSON.stringify(paths)
+                    );
+                } catch (error) {
+                    // The sidebar still works if storage is unavailable.
+                }
+            }
+
+            function initialiseSidebar() {
+                const sidebar = document.querySelector('.docs-sidebar');
+                if (!sidebar) return;
+
+                const expandedPaths = getExpandedPaths();
+
+                sidebar.querySelectorAll('.docs-nav-item').forEach(
+                    function (item) {
+                        const button = item.querySelector(
+                            ':scope > .docs-nav-row > .docs-toggle'
+                        );
+
+                        // Restore manually expanded sections.
+                        if (expandedPaths.includes(item.dataset.path)) {
+                            item.classList.add('expanded');
+                        }
+
+                        // Keep the current page and its ancestors open.
+                        if (
+                            item.classList.contains('active') ||
+                            item.classList.contains('has-children') &&
+                            item.querySelector(
+                                '.docs-nav-item.active'
+                            )
+                        ) {
+                            item.classList.add('expanded');
+                        }
+
+                        if (button) {
+                            button.setAttribute(
+                                'aria-expanded',
+                                String(item.classList.contains('expanded'))
+                            );
+                        }
+                    }
+                );
+
+                saveExpandedPaths();
+            }
+
+            // Expand/collapse when the chevron button is clicked.
+            document.addEventListener('click', function (event) {
+                const button = event.target.closest(
+                    '.docs-sidebar .docs-toggle'
+                );
+
+                if (!button) return;
+
+                const item = button.closest('.docs-nav-item');
+                if (!item) return;
+
+                const expanded = item.classList.toggle('expanded');
+
+                button.setAttribute(
+                    'aria-expanded',
+                    String(expanded)
+                );
+
+                saveExpandedPaths();
+            });
+
+            // Works whether this script runs before or after DOMContentLoaded.
+            if (document.readyState === 'loading') {
+                document.addEventListener(
+                    'DOMContentLoaded',
+                    initialiseSidebar
+                );
+            } else {
+                initialiseSidebar();
+            }
+        })();
+        </script>
+
+    {% else %}
+        {{ page.content|raw }}
+    {% endif %}
+{% endblock %}
+

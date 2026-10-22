@@ -1,0 +1,359 @@
+/*
+ * custom.css
+ * Site-wide custom styles for the quark2-docs Grav theme.
+ *
+ * Sections:
+ *   1. Documentation layout
+ *   2. Documentation sidebar navigation
+ *   3. Documentation table of contents
+ *   4. Responsive documentation layout
+ */
+
+/* =========================================================
+   1. Documentation layout
+   ========================================================= */
+
+/*
+ * The :has() selector widens the theme container only on pages
+ * that contain the documentation layout.
+ */
+.container:has(.docs-layout) {
+  width: 100%;
+  max-width: 1600px;
+}
+
+/*
+ * Main topic pages:
+ *   sidebar | article
+ *
+ * Pages with a generated table of contents:
+ *   sidebar | article | TOC
+ *
+ * Keep the sidebar track at 250px on desktop for both layouts.
+ */
+.docs-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+}
+
+.docs-layout.has-toc {
+  grid-template-columns: 250px minmax(0, 1fr) 190px;
+}
+
+.docs-sidebar,
+.docs-content,
+.docs-toc {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Left navigation column. */
+.docs-layout > .docs-sidebar {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  position: sticky;
+  top: 6rem;
+  max-height: none;
+  overflow: visible;
+  margin: 0;
+  padding: 0 1rem 1rem 0;
+  border-right: 1px solid var(--pico-muted-border-color, #ddd);
+  background: transparent;
+  text-align: left;
+}
+
+/* Main article column. */
+.docs-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   2. Documentation sidebar navigation
+   ========================================================= */
+
+/* Neutralize inherited Quark2/Pico navigation and list styling. */
+.docs-sidebar nav {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.docs-sidebar nav ul,
+.docs-sidebar nav li {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Each recursively rendered list fills its available width. */
+.docs-sidebar .docs-nav-list,
+.docs-sidebar .docs-nav-item,
+.docs-sidebar .docs-subnav {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.docs-sidebar .docs-nav-list {
+  width: 100%;
+}
+
+/* A navigation item is a link plus an optional expand/collapse button. */
+.docs-sidebar .docs-nav-row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  border-radius: 5px;
+  background: transparent;
+}
+
+/* Topic link. */
+.docs-sidebar .docs-nav-row > a {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border: 0;
+  border-radius: 5px 0 0 5px;
+  background: transparent;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  text-align: left;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* Expand/collapse button. */
+.docs-sidebar .docs-nav-row > .docs-toggle {
+  display: flex;
+  flex: 0 0 1.8rem;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  min-width: 1.8rem;
+  height: auto;
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0 5px 5px 0;
+  background: transparent;
+  color: var(--q2-text);
+  cursor: pointer;
+}
+
+/* Chevron icon. */
+.docs-sidebar .docs-chevron {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+
+.docs-sidebar .docs-nav-item.expanded > .docs-nav-row .docs-chevron {
+  transform: rotate(45deg);
+}
+
+/* Hover the complete row, including its expand/collapse button. */
+.docs-sidebar .docs-nav-row:hover {
+  background: rgba(127, 127, 127, 0.10);
+}
+
+/* Highlight only the current page, not its parent topics. */
+.docs-sidebar .docs-nav-item.active > .docs-nav-row {
+  background: rgba(127, 127, 127, 0.15);
+  font-weight: 600;
+}
+
+.docs-sidebar .docs-nav-item.active > .docs-nav-row > a,
+.docs-sidebar .docs-nav-item.active > .docs-nav-row > .docs-toggle {
+  background: transparent;
+}
+
+.docs-sidebar .docs-nav-item.active > .docs-nav-row:hover {
+  background: rgba(127, 127, 127, 0.20);
+}
+
+/* Ancestors of the current page remain visually unselected. */
+.docs-sidebar .docs-nav-item.activeChild:not(.active) > .docs-nav-row {
+  background: transparent;
+  font-weight: normal;
+}
+
+/* Hide nested topics until their parent is expanded. */
+.docs-sidebar .docs-subnav {
+  display: none;
+  margin-left: 0.55rem;
+  padding-left: 0.55rem;
+  border-left: 1px solid var(--pico-muted-border-color, #ddd);
+}
+
+.docs-sidebar .docs-nav-item.expanded > .docs-subnav {
+  display: block;
+}
+
+/* Slightly reduce link size at deeper navigation levels. */
+.docs-sidebar .docs-subnav .docs-nav-row > a {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.docs-sidebar .docs-subnav .docs-subnav .docs-nav-row > a {
+  font-size: 0.85rem;
+}
+
+/* Visible keyboard focus for links and buttons. */
+.docs-sidebar .docs-nav-row > a:focus-visible,
+.docs-sidebar .docs-nav-row > .docs-toggle:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--q2-focus-ring, #8428df);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-sidebar .docs-chevron {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   3. Documentation table of contents ("ON THIS PAGE")
+   ========================================================= */
+
+.docs-toc {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding-left: 1rem;
+  border-left: 1px solid var(--pico-muted-border-color, #ddd);
+  font-size: 0.85rem;
+}
+
+.docs-toc h4 {
+  margin: 0 0 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.docs-toc nav ul,
+.docs-toc nav li {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.docs-toc a {
+  display: block;
+  margin: 0;
+  padding: 0.3rem 0.5rem;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--q2-text);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+/* Indentation mirrors H2 > H3 > H4 heading levels. */
+.docs-toc .docs-toc-level-3 {
+  padding-left: 0.8rem;
+}
+
+.docs-toc .docs-toc-level-4 {
+  padding-left: 1.6rem;
+}
+
+.docs-toc a:hover {
+  border-left-color: currentColor;
+  background: rgba(127, 127, 127, 0.08);
+}
+
+.docs-toc[hidden] {
+  display: none !important;
+}
+
+/* Keep heading targets clear of sticky page elements when jumping to anchors. */
+.docs-content h2,
+.docs-content h3,
+.docs-content h4 {
+  scroll-margin-top: 2rem;
+}
+
+/* =========================================================
+   4. Responsive documentation layout
+   ========================================================= */
+
+/*
+ * At narrower desktop/tablet widths, keep the sidebar at 250px
+ * but reduce the gaps. The TOC stays in the third column.
+ */
+@media (max-width: 1100px) and (min-width: 851px) {
+  .docs-layout,
+  .docs-layout.has-toc {
+    gap: 1.25rem;
+  }
+}
+
+/*
+ * At 850px and below, stack the sidebar, article and optional TOC.
+ * The sidebar becomes full-width intentionally on small screens.
+ */
+@media (max-width: 850px) {
+  .docs-layout,
+  .docs-layout.has-toc {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .docs-layout > .docs-sidebar {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+    padding: 0 0 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--pico-muted-border-color, #ddd);
+  }
+
+  .docs-layout .docs-content,
+  .docs-layout .docs-toc {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .docs-toc {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 1rem 0 0 1rem;
+  }
+}

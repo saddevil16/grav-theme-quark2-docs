@@ -1,0 +1,251 @@
+name: Quark 2 Docs
+slug: quark2-docs
+type: theme
+version: 1.0.0
+description: A customized version of the Quark2 theme with documentation page.
+icon: book
+author:
+  name: site.pejal.org
+  email: contact@site.pejal.org
+homepage: https://github.com/saddevil16/grav-theme-quark2-docs
+demo: https://github.com/saddevil16/grav-theme-quark2-docs/_demo
+keywords: grav, theme, quark2, docs
+bugs: https://github.com/saddevil16/grav-theme-quark2-docs/issues
+readme: https://github.com/saddevil16/grav-theme-quark2-docs/blob/develop/README.md
+license: MIT
+
+compatibility:
+  grav: ['2.1']
+
+dependencies:
+  - { name: grav, version: '>=2.1.0' }
+  - { name: quark2 }
+
+form:
+  validation: loose
+
+  fields:
+
+    theme-mode:
+      type: select
+      label: Theme Mode Default
+      help: Default appearance before a user makes a choice. Users can still toggle in the UI.
+      size: small
+      default: auto
+      options:
+        auto: Auto (follows OS)
+        light: Light
+        dark: Dark
+
+    accent-color:
+      type: colorpicker
+      label: Accent Color
+      help: Tints links and focus rings. Leave blank for the pure monochrome palette.
+      default: '#3B82F6'
+
+    header_section:
+      type: section
+      title: Header
+      underline: true
+
+    custom_logo:
+      type: file
+      label: Custom Logo
+      help: Saved to user/themes/quark2-docs/images/logo. The file stays put across theme updates.
+      size: large
+      destination: 'theme://images/logo'
+      multiple: false
+      markdown: true
+      accept:
+        - image/*
+
+    custom_logo_mobile:
+      type: file
+      label: Custom Logo (Mobile)
+      help: Saved to user/themes/quark2-docs/images/logo. The file stays put across theme updates.
+      size: large
+      destination: 'theme://images/logo'
+      multiple: false
+      accept:
+        - image/*
+
+    custom_favicon:
+      type: file
+      label: Custom Favicon
+      help: A PNG, SVG or ICO file, 100 KB at most. Saved to user/themes/quark2-docs/images/favicon. The file stays put across theme updates.
+      filesize: 0.1
+      size: large
+      destination: 'theme://images/favicon'
+      multiple: false
+      accept:
+        - image/png
+        - image/svg+xml
+        - .ico
+
+    header-fixed:
+      type: toggle
+      label: Header Fixed
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    header-animated:
+      type: toggle
+      label: Header Animated
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    header-transparent:
+      type: toggle
+      label: Header Transparent (hero pages)
+      help: Lets the hero show through the header until the visitor scrolls.
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    header-dark:
+      type: toggle
+      label: Header Text Light
+      help: Draws the header text in white while it sits over a dark hero image.
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    header-light:
+      type: toggle
+      label: Header Text Dark
+      help: Draws the header text in near-black while it sits over a light hero image.
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    footer_section:
+      type: section
+      title: Footer
+      underline: true
+
+    sticky-footer:
+      type: toggle
+      label: Sticky Footer
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    blog_section:
+      type: section
+      title: Blog
+      underline: true
+
+    blog-page:
+      type: text
+      label: Blog Page Route
+      size: medium
+      default: '/blog'
+
+    icons_section:
+      type: section
+      title: Icons
+      underline: true
+
+    fontawesome.enabled:
+      type: toggle
+      label: Font Awesome 7
+      help: Load Font Awesome 7 free icon set.
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    fontawesome.local:
+      type: toggle
+      label: Serve Font Awesome locally
+      help: When enabled, expects `css/fontawesome/all.min.css` to exist in the theme. Otherwise uses the official CDN.
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    docs_section:
+      type: section
+      title: Documentation layout
+      underline: true
+
+    docs.root:
+      type: text
+      label: Documentation root route
+      help: Route of the page whose children appear in the docs sidebar
+      size: medium
+      default: '/docs'
+
+    docs.include_hidden:
+      type: toggle
+      label: Include non-visible pages in sidebar
+      help: Lets you hide doc pages from the main menu but still list them in the sidebar
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    docs.show_toc:
+      type: toggle
+      label: Show "On this page" table of contents
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    docs.remember_state:
+      type: toggle
+      label: Remember expanded sidebar sections
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    docs.sidebar_width:
+      type: number
+      label: Sidebar width (px)
+      default: 250
+      validate:
+        min: 180
+        max: 400

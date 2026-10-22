@@ -1,0 +1,28 @@
+streams:
+ schemes:
+   theme:
+     type: ReadOnlyStream
+     prefixes:
+       '':
+         - 'user://themes/quark2-docs'
+         - 'user://themes/quark2'
+
+enabled: true
+header-fixed: true
+header-animated: true
+header-transparent: false
+header-dark: false
+header-light: false
+sticky-footer: true
+theme-mode: auto
+accent-color: '#8428DF'
+blog-page: '/blog'
+fontawesome:
+  enabled: true
+  local: false
+docs:
+  root: /docs
+  include_hidden: true
+  show_toc: true
+  remember_state: true
+  sidebar_width: 250

@@ -156,6 +156,18 @@ The sidebar width is controlled by the CSS variable `--docs-sidebar-width`.
 To change the markup, copy `templates/docs.html.twig` into your own child theme and edit it there, so theme updates do not overwrite your changes.
 
 
+## Demo content
+
+Sample documentation pages are in `_demo/pages`. When you install the theme with `bin/gpm install quark2-docs`, GPM offers to copy them into `user/`. Demo content is **not** copied when the theme is installed from the Admin. To add it by hand:
+
+​```bash
+cp -r user/themes/quark2-docs/_demo/pages/. user/pages/
+​```
+
+The demo creates a `/docs` section, so skip it if you already have a page at that route.
+
+A live demo is at https://demo-quark2-docs.pejal.org/docs
+
 
 ## Credits and license
  

@@ -128,24 +128,16 @@ Put your own CSS in `css/custom.css`. The documentation layout uses these classe
  
 - `.docs-layout`, `.docs-sidebar`, `.docs-content`, `.docs-toc`
 - `.docs-nav-list`, `.docs-nav-item`, `.docs-nav-row`, `.docs-toggle`, `.docs-subnav`
+
 The sidebar width is controlled by the CSS variable `--docs-sidebar-width`.
  
 To change the markup, copy `templates/docs.html.twig` into your own child theme and edit it there, so theme updates do not overwrite your changes.
 
 
 
-## Troubleshooting
- 
-- **Pages do not show the sidebar.** Check that the file is named `docs.md` or has `template: docs` in its front matter, then run `bin/grav clearcache`.
-- **The sidebar is empty.** Check that `docs.root` matches the route of your docs landing page. The route is the folder name without its number prefix, for example `05.docs` becomes `/docs`.
-- **Some pages are missing from the sidebar.** Make sure **Include non-visible pages in sidebar** is enabled, and that the pages are published.
-- **Page content shows `&#039;` or other HTML entities in config files.** Re-save the file as plain text. YAML needs normal quote characters.
-
- 
-
 ## Credits and license
  
 Quark 2 Docs is a child theme of [Quark 2](https://github.com/getgrav/grav-theme-quark2) by Team Grav, which is released under the MIT license.
  
-Released under the [MIT License](LICENSE). Copyright (c) Team Grav for the original Quark 2 code and FaizalRefendi for the additions in this theme.
+Released under the [MIT License](LICENSE). Copyright (c) Trilby Media for the original Quark 2 code and FaizalRefendi for the additions in this theme.
  

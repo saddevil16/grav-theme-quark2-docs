@@ -1,19 +1,15 @@
 {% extends 'partials/base.html.twig' %}
 
-{% macro render_tree(pages) %}
+{% macro render_tree(pages, include_hidden) %}
     {% import _self as nav %}
 
     <ul class="docs-nav-list">
         {% for item in pages %}
-            {% set children = item.children %}
+            {# Children: all pages, or only visible ones (docs.include_hidden) #}
+            {% set children = include_hidden ? item.children : item.children.visible %}
 
-            <li class="docs-nav-item
-		{{ item.active ? 'active' : '' }}
-		{{ item.activeChild ? 'activeChild expanded' : '' }}
-		{{ item.active and children.count > 0 ? 'expanded' : '' }}
-		{{ children.count > 0 ? 'has-children' : '' }}"
-		data-path="{{ item.route|e('html_attr') }}"
-	    >
+            <li class="docs-nav-item {{ item.active ? 'active' : '' }} {{ item.activeChild ? 'activeChild expanded' : '' }} {{ item.active and children.count > 0 ? 'expanded' : '' }} {{ children.count > 0 ? 'has-children' : '' }}"
+                data-path="{{ item.route|e('html_attr') }}">
 
                 <div class="docs-nav-row">
                     <a href="{{ item.url }}">
@@ -24,7 +20,7 @@
                         <button
                             class="docs-toggle"
                             type="button"
-			    aria-expanded="{{ item.active or item.activeChild ? 'true' : 'false' }}"
+                            aria-expanded="{{ item.active or item.activeChild ? 'true' : 'false' }}"
                             aria-label="Toggle {{ item.menu ?: item.title }}"
                             title="Expand or collapse"
                         >
@@ -35,7 +31,7 @@
 
                 {% if children.count > 0 %}
                     <div class="docs-subnav">
-                        {{ nav.render_tree(children) }}
+                        {{ nav.render_tree(children, include_hidden) }}
                     </div>
                 {% endif %}
 
@@ -47,22 +43,31 @@
 {% import _self as docs_nav %}
 
 {% block content %}
-    {% set root = page.find('/docs') %}
+    {# Theme options saved from the admin (user/config/themes/quark2-docs.yaml) #}
+    {% set docs = config.theme.docs ?? theme_config.docs ?? {} %}
+    {% set root = page.find(docs.root|default('/docs')) %}
 
     {% if root %}
 
-        {# Main topics are direct children of /docs #}
+        {% set include_hidden = docs.include_hidden ?? true %}
+        {% set remember_state = docs.remember_state ?? true %}
+        {% set sidebar_width = docs.sidebar_width|default(250) %}
+        {% set top_items = include_hidden ? root.children : root.children.visible %}
+
+        {# Main topics are direct children of the docs root #}
         {% set is_main_topic = page.parent and page.parent.route == root.route %}
 
-        {# Show the right-hand TOC only for child/subchild pages #}
-        {% set show_toc = page.route != root.route and not is_main_topic %}
+        {# Right-hand TOC: child/subchild pages only, and only if enabled #}
+        {% set show_toc = (docs.show_toc ?? true) and page.route != root.route and not is_main_topic %}
+
+        <style>:root { --docs-sidebar-width: {{ sidebar_width|e('css') }}px; }</style>
 
         <div class="docs-layout {{ show_toc ? 'has-toc' : 'no-toc' }}">
 
             {# LEFT: Documentation navigation #}
             <aside class="docs-sidebar">
                 <nav aria-label="Documentation">
-                    {{ docs_nav.render_tree(root.children) }}
+                    {{ docs_nav.render_tree(top_items, include_hidden) }}
                 </nav>
             </aside>
 
@@ -137,12 +142,17 @@
             });
             </script>
         {% endif %}
-	        {# Keep dropdowns open across documentation page navigation #}
+
+        {# Sidebar expand/collapse. The current page and its parents always
+           open; docs.remember_state controls whether manual choices persist. #}
         <script>
         (function () {
+            const rememberState = {{ remember_state ? 'true' : 'false' }};
             const storageKey = 'docs-sidebar-expanded';
 
             function getExpandedPaths() {
+                if (!rememberState) return [];
+
                 try {
                     return JSON.parse(
                         sessionStorage.getItem(storageKey) || '[]'
@@ -153,6 +163,8 @@
             }
 
             function saveExpandedPaths() {
+                if (!rememberState) return;
+
                 const paths = Array.from(
                     document.querySelectorAll(
                         '.docs-sidebar .docs-nav-item.expanded'
@@ -250,4 +262,3 @@
         {{ page.content|raw }}
     {% endif %}
 {% endblock %}
-

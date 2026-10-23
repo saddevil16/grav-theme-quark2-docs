@@ -60,9 +60,8 @@
         {# Right-hand TOC: child/subchild pages only, and only if enabled #}
         {% set show_toc = (docs.show_toc ?? true) and page.route != root.route and not is_main_topic %}
 
-        <style>:root { --docs-sidebar-width: {{ sidebar_width|e('css') }}px; }</style>
-
-        <div class="docs-layout {{ show_toc ? 'has-toc' : 'no-toc' }}">
+        <div class="docs-layout {{ show_toc ? 'has-toc' : 'no-toc' }}" 
+            style="--docs-sidebar-width: {{ sidebar_width|e('html_attr') }}px">
 
             {# LEFT: Documentation navigation #}
             <aside class="docs-sidebar">

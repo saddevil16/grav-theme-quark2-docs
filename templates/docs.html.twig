@@ -42,6 +42,11 @@
 
 {% import _self as docs_nav %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% do assets.addCss('theme://css/docs.css', 82) %}
+{% endblock %}
+
 {% block content %}
     {# Theme options saved from the admin (user/config/themes/quark2-docs.yaml) #}
     {% set docs = config.theme.docs ?? theme_config.docs ?? {} %}

@@ -1,3 +1,8 @@
+# 1.0.1
+## 2026-10-31
+1. [](#improved)
+    * Add `Fluid Layout` option in settings to reflect the feature in Quark2 theme update.
+
 # 1.0.0
 ## 2026-10-23
 

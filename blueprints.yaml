@@ -1,7 +1,7 @@
 name: Quark 2 Docs
 slug: quark2-docs
 type: theme
-version: 1.0.0
+version: 1.0.1
 description: A customized version of the Quark2 theme with documentation page.
 icon: book
 author:
@@ -16,10 +16,11 @@ license: MIT
 
 compatibility:
   grav: ['2.1']
+  quark2: ['1.1.20']
 
 dependencies:
   - { name: grav, version: '>=2.1.0' }
-  - { name: quark2, version: '>=1.1.17' }
+  - { name: quark2, version: '>=1.1.20' }
 
 form:
   validation: loose
